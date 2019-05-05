@@ -1,0 +1,14 @@
+#Building
+
+mkdir build
+cd build
+cmake ../
+make
+
+#Running (from the same directory)
+
+./WaveSolver
+
+#Plot and animate
+
+../plot.sh
