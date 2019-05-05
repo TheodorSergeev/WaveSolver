@@ -1,0 +1,2 @@
+# Ignore build folder (contains output and cmake files)
+build/
