@@ -3,12 +3,12 @@
 #include "Test.h"
 #include "TestQuadratic.h"
 #include "TestConstant.h"
+#include "Impulse.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <exception>
 #include <limits>
-
 
 // indent
 
@@ -21,8 +21,11 @@ int main()
         TestQuadratic test1;
         TestConstant  test2;
 
-        Guitar prob;
-        prob.Solver();
+        Impulse imp;
+        imp.Solver();
+
+        //Guitar prob;
+        //prob.Solver();
 
     }
     catch(string& err)

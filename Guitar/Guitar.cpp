@@ -37,7 +37,7 @@ Guitar::Guitar()
     x_step      = wavespeed * t_step / courant_num; // !!!
 
     a = 0.005;
-    X0 = 0.4 * length;
+    X0 = 0.8 * length;
     mesh_size = (int)(round(length / x_step));
 
     curr_sol_arr.assign(mesh_size, 0.0);
@@ -48,7 +48,11 @@ Guitar::Guitar()
     coef_sq = t_st_sq / (x_step * x_step);
 
     left_bound_cond  = DIRICHLET;
-    right_bound_cond = PML;
+    right_bound_cond = DIRICHLET;
+
+    pml_right.layers_num = 10;
+    pml_right.max_abs_coef = 15.0;
+    pml_right.power = 2.0;
 
     Check();
     //Dump();

@@ -14,6 +14,17 @@ using std::to_string;
 
 enum BoundCondType { NONE, DIRICHLET, NEUMANN, MUR, PML };
 
+struct PmlVars
+{
+
+    int    layers_num;   // number of PML Layers
+    double max_abs_coef; // constant determining spatial distribution pattern of abs_coef
+    double power;        // maximum possible value of abs_coef
+
+    double abs_coef(int layer); // absorbing coefficient
+
+};
+
 class Wave1DSolver
 {
 
@@ -30,6 +41,8 @@ protected:
 
     unsigned int mesh_size;
 
+    BoundCondType left_bound_cond, right_bound_cond;
+
     double length;
     double time_lim;
     double t_step;
@@ -37,9 +50,9 @@ protected:
     double x_step;
 
     double t_st_sq, coef_sq;      // utility variables
-    double avr_c_sq(double node); // utility function
+    double avr_c_sq(double node); // utility functions
 
-    BoundCondType left_bound_cond, right_bound_cond;
+    PmlVars pml_left, pml_right;
 
     void CheckX(double x);        // check whether x is in [0, length]
     void Check();                 // check whether variables are defined correctly
@@ -57,8 +70,8 @@ protected:
 
 public:
 
-    virtual double DirL(double t) = 0;
-    virtual double DirR(double t) = 0;
+    virtual double DirL(double t);
+    virtual double DirR(double t);
 
     virtual double InitCoord(double x);
     virtual double InitVeloc(double x);

@@ -1,5 +1,14 @@
 #include "Wave1DSolver.h"
 
+double PmlVars::abs_coef(int layer)
+{
+
+    if(layer < 0)
+        throw "Layer l = " + to_string(layer) + " but cannot be <0 in PmlVars::abs_coef";
+
+    return max_abs_coef * pow(layer / layers_num, power);
+
+}
 
 void Wave1DSolver::CheckX(double x)
 {
@@ -100,6 +109,21 @@ double Wave1DSolver::RightBoundCond(double t)
 
 }
 
+
+double Wave1DSolver::DirL(double t)
+{
+
+    return 0.0;
+
+}
+
+double Wave1DSolver::DirR(double t)
+{
+
+    return 0.0;
+
+}
+
 double Wave1DSolver::NeuL(double t)
 {
 
@@ -162,15 +186,9 @@ double Wave1DSolver::PmlR(double t)
 {
 
     // todo: check that N < mesh_size / 2 - 1
-    const int N = 7;           // number of PML Layers
-    const double m = 1.0;       // constant determining spatial distribution pattern of abs_coef
-    const double MAX_ABS = 0.25; // maximum possible value of abs_coef
-    double abs_coef = 0.0;      // absorbing coefficient
 
-    for(int i = mesh_size - 1 - N; i < mesh_size - 1; ++i)
+    for(int i = mesh_size - 1 - pml_right.layers_num; i < mesh_size - 1; ++i)
     {
-
-        abs_coef = MAX_ABS * pow(i / N, m);
 
         // here c = const is considered
         // todo: c = c(x)
@@ -178,18 +196,21 @@ double Wave1DSolver::PmlR(double t)
         //cout << "i+1 = " << i+1 << " " << mesh_size - 1 << '\n';
 
         next_sol[i + 1] = curr_sol[i] - t_step / pow(WaveSpeed(i * x_step), 2.0) *
-                          (abs_coef * curr_sol[i] + (curr_sol[i] - curr_sol[i - 1]) / x_step);
+                          (pml_right.abs_coef(mesh_size - 1 - i) * curr_sol[i] + (curr_sol[i] - curr_sol[i - 1]) / x_step);
 
     }
 
-    return next_sol[mesh_size - 1];
+    return 0.0;
 
 }
 
 
-double Wave1DSolver::MurL(double t) // should not work!!!
+double Wave1DSolver::MurL(double t)
 {
 
+    //return curr_sol[0] - WaveSpeed(1 * x_step) * t_step / x_step * (curr_sol[1] - curr_sol[0]);
+
+    // the neighbour is already computed
     double ct = WaveSpeed(0.5 * x_step) * t_step;
     return curr_sol[1] - (ct - x_step) / (ct + x_step) * (curr_sol[0] - next_sol[1]);
 
@@ -198,6 +219,10 @@ double Wave1DSolver::MurL(double t) // should not work!!!
 double Wave1DSolver::MurR(double t)
 {
 
+    //int N = mesh_size - 1;
+    //return curr_sol[N] - WaveSpeed((N - 1) * x_step) * t_step / x_step * (curr_sol[N] - curr_sol[N - 1]);
+
+    // old version - will be revisited
     double ct = WaveSpeed(0.5 * x_step) * t_step;
     return curr_sol[mesh_size - 2] + (ct - x_step) / (ct + x_step) * (next_sol[mesh_size - 2] - curr_sol[mesh_size - 1]);
 
@@ -241,7 +266,6 @@ Wave1DSolver::Wave1DSolver():
     next_sol(next_sol_arr), curr_sol(curr_sol_arr), prev_sol(prev_sol_arr),
     left_bound_cond(NONE), right_bound_cond(NONE)
 {}
-
 
 
 void Wave1DSolver::RecordCurrSol(string& prefix, double t)

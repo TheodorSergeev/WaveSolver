@@ -32,9 +32,10 @@ for FILE in ./data/*.txt; do
   echo "" >> $GPI
   echo "set title \"t = $time\"" >> $GPI
   echo "set output \"./graph/graph_$graph_num.png\"" >> $GPI
-  echo "plot \"$FILE\" using 1:2 smooth unique notitle  ls 10, \"$FILE\" using 1:2 notitle ls 10" >>$GPI
+  echo "plot \"$FILE\" using 1:2 smooth unique notitle  ls 10" >>$GPI
   ((NUM++))
 done
+#  echo "plot \"$FILE\" using 1:2 smooth unique notitle  ls 10, \"$FILE\" using 1:2 notitle ls 10" >>$GPI
 
 echo ""
 echo "Running gnuplot script..."
@@ -42,7 +43,7 @@ gnuplot $GPI
 
 echo ""
 echo "Creating animation..."
-ffmpeg -r 15 -i ./graph/graph_%06d.png -c:v libx264 movie_PML.mp4 -v 0
+ffmpeg -r 15 -i ./graph/graph_%06d.png -c:v libx264 movie_impulse.mp4 -v 0
 
 echo ""
 echo "Finished."
