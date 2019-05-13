@@ -29,10 +29,10 @@ Guitar::Guitar()
     wavelength = 2 * length;
     wavespeed = freq * wavelength;
     omega = 2 * M_PI * freq;
-    periods = 2.0;
+    periods = 4.0;
 
     time_lim    = 2 * M_PI / omega * periods;
-    t_step      = length / 50.0 / wavespeed;
+    t_step      = length / 100.0 / wavespeed;
     courant_num = 0.85;
     x_step      = wavespeed * t_step / courant_num; // !!!
 
@@ -49,10 +49,6 @@ Guitar::Guitar()
 
     left_bound_cond  = DIRICHLET;
     right_bound_cond = DIRICHLET;
-
-    pml_right.layers_num = 10;
-    pml_right.max_abs_coef = 15.0;
-    pml_right.power = 2.0;
 
     Check();
     //Dump();

@@ -7,10 +7,24 @@ double Impulse::InitCoord(double x)
     //return 0.0;
     CheckX(x);
 
-    if(x < X0 - length / 6 || x > X0 + length / 6)
+    if(x <= X0 - (x_step * 10) || x >= X0 + (x_step * 10))
         return 0.0;
     else
-        return amp * cos((X0 - x) * M_PI * (length * 6));
+        return amp * cos((X0 - x) * M_PI / 2 / (x_step * 10));
+
+}
+
+double Impulse::InitVeloc(double x)
+{
+
+    return 0.0;
+    CheckX(x);
+
+    if(x < X0 - (x_step * 10) || x > X0 + (x_step * 10))
+        return 0.0;
+    else
+        return - amp * cos((X0 - x) * M_PI * (length * (x_step * 10)));
+
 
 }
 
@@ -42,7 +56,6 @@ Impulse::Impulse()
 
     time_lim    = t_step * 400;
 
-
     curr_sol_arr.assign(mesh_size, 0.0);
     next_sol_arr = curr_sol_arr;
     prev_sol_arr = curr_sol_arr;
@@ -50,12 +63,8 @@ Impulse::Impulse()
     t_st_sq = t_step * t_step;
     coef_sq = t_st_sq / (x_step * x_step);
 
-    pml_right.layers_num = 10;
-    pml_right.max_abs_coef = 100.0;
-    pml_right.power = 2.0;
-
-    left_bound_cond  = MUR;
-    right_bound_cond = MUR;
+    left_bound_cond  = NEUMANN;
+    right_bound_cond = NEUMANN;
 
     Check();
     //Dump();

@@ -1,14 +1,5 @@
 #include "Wave1DSolver.h"
 
-double PmlVars::abs_coef(int layer)
-{
-
-    if(layer < 0)
-        throw "Layer l = " + to_string(layer) + " but cannot be <0 in PmlVars::abs_coef";
-
-    return max_abs_coef * pow(layer / layers_num, power);
-
-}
 
 void Wave1DSolver::CheckX(double x)
 {
@@ -87,7 +78,6 @@ double Wave1DSolver::LeftBoundCond(double t)
         case DIRICHLET: return DirL(t);
         case NEUMANN:   return NeuL(t);
         case MUR:       return MurL(t);
-        case PML:       return PmlL(t);
 
     }
 
@@ -103,7 +93,6 @@ double Wave1DSolver::RightBoundCond(double t)
         case DIRICHLET: return DirR(t);
         case NEUMANN:   return NeuR(t);
         case MUR:       return MurR(t);
-        case PML:       return PmlR(t);
 
     }
 
@@ -171,36 +160,6 @@ double Wave1DSolver::NeuR(double t)
                   t_st_sq * HeterFunc(x_step * i, t);
 
     return right_bound;
-
-}
-
-
-double Wave1DSolver::PmlL(double t)
-{
-
-    return 0.0;
-
-}
-
-double Wave1DSolver::PmlR(double t)
-{
-
-    // todo: check that N < mesh_size / 2 - 1
-
-    for(int i = mesh_size - 1 - pml_right.layers_num; i < mesh_size - 1; ++i)
-    {
-
-        // here c = const is considered
-        // todo: c = c(x)
-
-        //cout << "i+1 = " << i+1 << " " << mesh_size - 1 << '\n';
-
-        next_sol[i + 1] = curr_sol[i] - t_step / pow(WaveSpeed(i * x_step), 2.0) *
-                          (pml_right.abs_coef(mesh_size - 1 - i) * curr_sol[i] + (curr_sol[i] - curr_sol[i - 1]) / x_step);
-
-    }
-
-    return 0.0;
 
 }
 

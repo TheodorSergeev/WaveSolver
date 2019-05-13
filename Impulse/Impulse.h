@@ -13,6 +13,7 @@ private:
 public:
 
     virtual double WaveSpeed(double x);
+    virtual double InitVeloc(double x);
     virtual double InitCoord(double x);
 
     Impulse();

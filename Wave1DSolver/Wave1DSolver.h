@@ -12,18 +12,8 @@ using std::string;
 using std::cout;
 using std::to_string;
 
-enum BoundCondType { NONE, DIRICHLET, NEUMANN, MUR, PML };
+enum BoundCondType { NONE, DIRICHLET, NEUMANN, MUR };
 
-struct PmlVars
-{
-
-    int    layers_num;   // number of PML Layers
-    double max_abs_coef; // constant determining spatial distribution pattern of abs_coef
-    double power;        // maximum possible value of abs_coef
-
-    double abs_coef(int layer); // absorbing coefficient
-
-};
 
 class Wave1DSolver
 {
@@ -52,8 +42,6 @@ protected:
     double t_st_sq, coef_sq;      // utility variables
     double avr_c_sq(double node); // utility functions
 
-    PmlVars pml_left, pml_right;
-
     void CheckX(double x);        // check whether x is in [0, length]
     void Check();                 // check whether variables are defined correctly
     void Dump();                  // print techical info (all variables)
@@ -63,8 +51,6 @@ protected:
 
     double NeuL(double t);        // compute left  node solution for Neumann boundary condition
     double NeuR(double t);        // compute right node solution for Neumann boundary condition
-    double PmlL(double t);        // compute left  node solution for PML boundary condition
-    double PmlR(double t);        // compute right node solution for PML boundary condition
     double MurL(double t);        // compute left  node solution for Mur boundary condition
     double MurR(double t);        // compute left  node solution for Mur boundary condition
 

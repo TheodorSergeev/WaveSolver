@@ -43,7 +43,7 @@ gnuplot $GPI
 
 echo ""
 echo "Creating animation..."
-ffmpeg -r 15 -i ./graph/graph_%06d.png -c:v libx264 movie_impulse.mp4 -v 0
+ffmpeg -r 15 -i ./graph/graph_%06d.png -c:v libx264 movie.mp4 -v 0
 
 echo ""
 echo "Finished."
